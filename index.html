@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        fs.readFile("C:\Users\nbnik\Downloads\interactive-comments-section-main\data.json", function(error, content) {
+            var data = JSON.parse(content);
+            console.log(data.collection.length);
+        });
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
+
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png" />
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>Frontend Mentor | Interactive comments section</title>
+
+    <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+    <style>
+        .attribution {
+            font-size: 11px;
+            text-align: center;
+        }
+        
+        .attribution a {
+            color: hsl(228, 45%, 44%);
+        }
+    </style>
+</head>
+
+<body class="font-rubik">
+    <main class="bg-very-light-gray h-max-screen w-max-screen px-4 py-8">
+        <section class="container">
+            <div class="post-container"></div>
+            <div class="submit-comment mt-4 desktop:w-desktop-card desktop:mx-auto">
+                <div class="p-4 bg-white rounded-2xl">
+                    <div class="flex justify-between">
+                        <div class="flex">
+                            <img class="hidden desktop:block w-9 h-9 ml-2 mr-4" src="./images/avatars/image-juliusomo.png" alt="juliusomo" />
+                            <textarea class="w-mobile-textarea resize-none border border-light-gray rounded-xl p-4 text-grayish-blue outline outline-1 focus:outline-moderate-blue desktop:w-desktop-textarea" name="comment" id="" cols="29" rows="3">
+Add a comment...</textarea
+                >
+              </div>
+              <div class="hidden desktop:block">
+                <button
+                  class="bg-moderate-blue rounded-xl px-6 py-3 text-white font-bold hover:bg-light-grayish-blue active:bg-light-grayish-blue"
+                  type="button"
+                >
+                  SEND
+                </button>
+              </div>
+            </div>
+            <div
+              class="flex justify-between items-center align-middle mt-2 desktop:hidden"
+            >
+              <img
+                class="w-8 h-8"
+                src="./images/avatars/image-juliusomo.png"
+                alt="juliusomo"
+              />
+              <button
+                class="bg-moderate-blue rounded-xl px-6 py-3 text-white font-bold"
+                type="button"
+              >
+                SEND
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Pull dynamic content from the data.json file -->
+    <div class="attribution">
+      Challenge by
+      <a href="https://www.frontendmentor.io?ref=challenge" target="_blank"
+        >Frontend Mentor</a
+      >. Coded by <a href="#" > NAITIK BHAVSAR</a>.
+    </div>
+    <script>
+      const main = async () => {
+        let postContainer = document.querySelector(".post-container");
+
+        let data = await fetch("./data.json").then((response) => {
+          return response;
+        });
+        data = await data.json();
+
+        const currentUser = data.currentUser;
+        const comments = data.comments;
+
+        const renderReply = (replies) => {
+          let repliesElement = "";
+          replies.forEach((reply) => {
+            repliesElement += `<div class="bg-white rounded-xl shadow-sm p-4 desktop:px-7 mb-4">
+                  <div class="flex flex-row align-middle items-center">
+                    <div
+                      class="hidden desktop:h-24 desktop:w-16 desktop:bg-light-gray desktop:rounded-2xl desktop:flex desktop:flex-col desktop:justify-around desktop:items-center desktop:align-middle desktop:px-3 desktop:mr-6"
+                    >
+                    <svg width="11" class="cursor-pointer fill-light-grayish-blue hover:fill-moderate-blue"  height="11" xmlns="http://www.w3.org/2000/svg"><path d="M6.33 10.896c.137 0 .255-.05.354-.149.1-.1.149-.217.149-.354V7.004h3.315c.136 0 .254-.05.354-.149.099-.1.148-.217.148-.354V5.272a.483.483 0 0 0-.148-.354.483.483 0 0 0-.354-.149H6.833V1.4a.483.483 0 0 0-.149-.354.483.483 0 0 0-.354-.149H4.915a.483.483 0 0 0-.354.149c-.1.1-.149.217-.149.354v3.37H1.08a.483.483 0 0 0-.354.15c-.1.099-.149.217-.149.353v1.23c0 .136.05.254.149.353.1.1.217.149.354.149h3.333v3.39c0 .136.05.254.15.353.098.1.216.149.353.149H6.33Z" /></svg>
+                      <span class="font-bold text-moderate-blue text-15px"
+                        >${reply.score}</span
+                      >
+                      <svg width="11" class="cursor-pointer fill-light-grayish-blue hover:fill-moderate-blue" height="3" xmlns="http://www.w3.org/2000/svg"><path d="M9.256 2.66c.204 0 .38-.056.53-.167.148-.11.222-.243.222-.396V.722c0-.152-.074-.284-.223-.395a.859.859 0 0 0-.53-.167H.76a.859.859 0 0 0-.53.167C.083.437.009.57.009.722v1.375c0 .153.074.285.223.396a.859.859 0 0 0 .53.167h8.495Z" /></svg>
+                    </div>
+                    <div>
+                      <div class="flex justify-between">
+                        <div class="flex items-center align-middle">
+                          <div class="flex items-center mr-4">
+                            <img
+                              src="${reply.user.image.png}"
+                              class="w-7 mr-3"
+                              alt="user"
+                            />
+                            <div>
+                              <span class="text-base font-bold text-dark-blue"
+                                >${reply.user.username}</span
+                              >
+                              ${
+                                reply.user.username == currentUser.username
+                                  ? `<span
+                                class="bg-moderate-blue text-white font-bold px-1 pb-0.5 text-sm rounded-sm"
+                                >you</span>`
+                                  : ""
+                              }
+                            </div>
+                          </div>
+                          <span class="text-base text-grayish-blue"
+                            >${reply.createdAt}</span
+                          >
+                        </div>
+                        ${
+                          reply.user.username === currentUser.username
+                            ? `<div
+                          class="hidden desktop:flex desktop:justify-between desktop:items-center"
+                        >
+                          <button
+                            type="button"
+                            class="w-20 h-8 flex bg-transparent fill-soft-red text-soft-red hover:fill-pale-red hover:text-pale-red font-bold items-center align-middle mr-2"
+                          >
+                          <svg width="12" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M1.167 12.448c0 .854.7 1.552 1.555 1.552h6.222c.856 0 1.556-.698 1.556-1.552V3.5H1.167v8.948Zm10.5-11.281H8.75L7.773 0h-3.88l-.976 1.167H0v1.166h11.667V1.167Z" /></svg>
+                            <span class="m-1">Delete</span>
+                          </button>
+                          <button
+                            type="button"
+                            class="flex bg-transparent fill-moderate-blue text-moderate-blue hover:fill-light-grayish-blue hover:text-light-grayish-blue font-bold items-center align-middle"
+                          >
+                          <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M13.479 2.872 11.08.474a1.75 1.75 0 0 0-2.327-.06L.879 8.287a1.75 1.75 0 0 0-.5 1.06l-.375 3.648a.875.875 0 0 0 .875.954h.078l3.65-.333c.399-.04.773-.216 1.058-.499l7.875-7.875a1.68 1.68 0 0 0-.061-2.371Zm-2.975 2.923L8.159 3.449 9.865 1.7l2.389 2.39-1.75 1.706Z" /></svg>
+                            <span class="m-1">Edit</span>
+                          </button>
+                        </div> `
+                            : ` <button
+                      type="button"
+                      class="hidden text-moderate-blue fill-moderate-blue hover:fill-light-grayish-blue hover:text-light-grayish-blue desktop:w-16 desktop:h-10 desktop:flex desktop:justify-around desktop:items-center desktop:align-middle"
+                    >
+                    <svg width="14" height="13" xmlns="http://www.w3.org/2000/svg"><path d="M.227 4.316 5.04.16a.657.657 0 0 1 1.085.497v2.189c4.392.05 7.875.93 7.875 5.093 0 1.68-1.082 3.344-2.279 4.214-.373.272-.905-.07-.767-.51 1.24-3.964-.588-5.017-4.829-5.078v2.404c0 .566-.664.86-1.085.496L.227 5.31a.657.657 0 0 1 0-.993Z" /></svg>
+                      <span class="font-bold text-15px"
+                        >Reply</span
+                      >
+                    </button>`
+                        }
+                      </div>
+                      <div>
+                        <p class="text-base text-grayish-blue py-4">
+                          <span class="font-bold text-moderate-blue"
+                            >@${reply.replyingTo}</span
+                          >
+                         ${reply.content}
+                        </p>
+                      </div>
+                      <div class="flex justify-between desktop:hidden">
+                        <div
+                          class="h-10 w-24 bg-light-gray rounded-2xl flex justify-around items-center align-middle px-2"
+                        >
+                        <svg width="11" class="cursor-pointer fill-light-grayish-blue hover:fill-moderate-blue"  height="11" xmlns="http://www.w3.org/2000/svg"><path d="M6.33 10.896c.137 0 .255-.05.354-.149.1-.1.149-.217.149-.354V7.004h3.315c.136 0 .254-.05.354-.149.099-.1.148-.217.148-.354V5.272a.483.483 0 0 0-.148-.354.483.483 0 0 0-.354-.149H6.833V1.4a.483.483 0 0 0-.149-.354.483.483 0 0 0-.354-.149H4.915a.483.483 0 0 0-.354.149c-.1.1-.149.217-.149.354v3.37H1.08a.483.483 0 0 0-.354.15c-.1.099-.149.217-.149.353v1.23c0 .136.05.254.149.353.1.1.217.149.354.149h3.333v3.39c0 .136.05.254.15.353.098.1.216.149.353.149H6.33Z" /></svg>
+                          <span class="font-bold text-moderate-blue text-15px"
+                            >${reply.score}</span
+                          >
+                          <svg width="11" class="cursor-pointer fill-light-grayish-blue hover:fill-moderate-blue" height="3" xmlns="http://www.w3.org/2000/svg"><path d="M9.256 2.66c.204 0 .38-.056.53-.167.148-.11.222-.243.222-.396V.722c0-.152-.074-.284-.223-.395a.859.859 0 0 0-.53-.167H.76a.859.859 0 0 0-.53.167C.083.437.009.57.009.722v1.375c0 .153.074.285.223.396a.859.859 0 0 0 .53.167h8.495Z" /></svg>
+                        </div>
+                       ${
+                         reply.user.username == currentUser.username
+                           ? `<div class="flex justify-between items-center">
+                          <button
+                            type="button"
+                            class="w-20 h-8 flex bg-transparent fill-soft-red text-soft-red hover:fill-pale-red hover:text-pale-red font-bold items-center align-middle mr-2"
+                          >
+                          <svg width="12" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M1.167 12.448c0 .854.7 1.552 1.555 1.552h6.222c.856 0 1.556-.698 1.556-1.552V3.5H1.167v8.948Zm10.5-11.281H8.75L7.773 0h-3.88l-.976 1.167H0v1.166h11.667V1.167Z" /></svg>
+                            <span class="m-1">Delete</span>
+                          </button>
+                          <button
+                            type="button"
+                            class="flex bg-transparent fill-moderate-blue text-moderate-blue hover:fill-light-grayish-blue hover:text-light-grayish-blue font-bold items-center align-middle"
+                          >
+                          <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M13.479 2.872 11.08.474a1.75 1.75 0 0 0-2.327-.06L.879 8.287a1.75 1.75 0 0 0-.5 1.06l-.375 3.648a.875.875 0 0 0 .875.954h.078l3.65-.333c.399-.04.773-.216 1.058-.499l7.875-7.875a1.68 1.68 0 0 0-.061-2.371Zm-2.975 2.923L8.159 3.449 9.865 1.7l2.389 2.39-1.75 1.706Z" /></svg>
+                            <span class="m-1">Edit</span>
+                          </button>
+                        </div>`
+                           : `<button
+                      type="button"
+                      class="w-16 h-10 text-moderate-blue fill-moderate-blue hover:fill-light-grayish-blue hover:text-light-grayish-blue flex justify-around items-center align-middle desktop:hidden"
+                    >
+                    <svg width="14" height="13" xmlns="http://www.w3.org/2000/svg"><path d="M.227 4.316 5.04.16a.657.657 0 0 1 1.085.497v2.189c4.392.05 7.875.93 7.875 5.093 0 1.68-1.082 3.344-2.279 4.214-.373.272-.905-.07-.767-.51 1.24-3.964-.588-5.017-4.829-5.078v2.404c0 .566-.664.86-1.085.496L.227 5.31a.657.657 0 0 1 0-.993Z" /></svg>
+                      <span class="font-bold text-15px "
+                        >Reply</span
+                      >
+                    </button>`
+                       }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                `;
+          });
+          return repliesElement;
+        };
+
+        comments.forEach((comment) => {
+          let commentELement = "";
+          commentELement += `
+          <div class="post-card mb-4">
+            <div
+              class="bg-white rounded-xl shadow-sm p-18px mb-4 desktop:w-desktop-card desktop:mx-auto desktop:px-7"
+            >
+              <div class="flex align-middle items-center">
+                <div
+                  class="hidden desktop:h-24 desktop:w-16 desktop:bg-light-gray desktop:rounded-2xl desktop:flex desktop:flex-col desktop:justify-around desktop:items-center desktop:align-middle desktop:px-3 desktop:mr-6"
+                >
+                  <svg width="11" class="cursor-pointer fill-light-grayish-blue hover:fill-moderate-blue"  height="11" xmlns="http://www.w3.org/2000/svg"><path d="M6.33 10.896c.137 0 .255-.05.354-.149.1-.1.149-.217.149-.354V7.004h3.315c.136 0 .254-.05.354-.149.099-.1.148-.217.148-.354V5.272a.483.483 0 0 0-.148-.354.483.483 0 0 0-.354-.149H6.833V1.4a.483.483 0 0 0-.149-.354.483.483 0 0 0-.354-.149H4.915a.483.483 0 0 0-.354.149c-.1.1-.149.217-.149.354v3.37H1.08a.483.483 0 0 0-.354.15c-.1.099-.149.217-.149.353v1.23c0 .136.05.254.149.353.1.1.217.149.354.149h3.333v3.39c0 .136.05.254.15.353.098.1.216.149.353.149H6.33Z" /></svg>
+                        <span class="font-bold text-moderate-blue text-15px"
+                          >${comment.score}</span
+                        >
+                  <svg width="11" class="cursor-pointer fill-light-grayish-blue hover:fill-moderate-blue" height="3" xmlns="http://www.w3.org/2000/svg"><path d="M9.256 2.66c.204 0 .38-.056.53-.167.148-.11.222-.243.222-.396V.722c0-.152-.074-.284-.223-.395a.859.859 0 0 0-.53-.167H.76a.859.859 0 0 0-.53.167C.083.437.009.57.009.722v1.375c0 .153.074.285.223.396a.859.859 0 0 0 .53.167h8.495Z" /></svg>
+                </div>
+                <div>
+                  <div class="flex justify-between items-center align-middle">
+                    <div class="flex items-center">
+                      <div class="flex items-center mr-4">
+                        <img
+                          src="${comment.user.image.png}"
+                          class="w-7 mr-3"
+                          alt="user"
+                        />
+                        <span class="text-base font-bold text-dark-blue"
+                          >${comment.user.username}</span
+                        >
+                      </div>
+                      <span class="text-base text-grayish-blue"
+                        >${comment.createdAt}</span
+                      >
+                    </div>
+                    <button
+                      type="button"
+                      class="hidden text-moderate-blue fill-moderate-blue hover:fill-light-grayish-blue hover:text-light-grayish-blue desktop:w-16 desktop:h-10 desktop:flex desktop:justify-around desktop:items-center desktop:align-middle"
+                    >
+                    <svg width="14" height="13" xmlns="http://www.w3.org/2000/svg"><path d="M.227 4.316 5.04.16a.657.657 0 0 1 1.085.497v2.189c4.392.05 7.875.93 7.875 5.093 0 1.68-1.082 3.344-2.279 4.214-.373.272-.905-.07-.767-.51 1.24-3.964-.588-5.017-4.829-5.078v2.404c0 .566-.664.86-1.085.496L.227 5.31a.657.657 0 0 1 0-.993Z" /></svg>
+                      <span class="font-bold text-15px"
+                        >Reply</span
+                      >
+                    </button>
+                  </div>
+                  <div>
+                    <p class="text-base text-grayish-blue py-4 desktop:pr-4">
+                      ${comment.content}
+                    </p>
+                  </div>
+                  <div class="flex justify-between">
+                    <div
+                      class="h-10 w-24 bg-light-gray rounded-2xl flex justify-around items-center align-middle px-2 desktop:hidden"
+                    >
+                    <svg width="11" class="cursor-pointer fill-light-grayish-blue hover:fill-moderate-blue"  height="11" xmlns="http://www.w3.org/2000/svg"><path d="M6.33 10.896c.137 0 .255-.05.354-.149.1-.1.149-.217.149-.354V7.004h3.315c.136 0 .254-.05.354-.149.099-.1.148-.217.148-.354V5.272a.483.483 0 0 0-.148-.354.483.483 0 0 0-.354-.149H6.833V1.4a.483.483 0 0 0-.149-.354.483.483 0 0 0-.354-.149H4.915a.483.483 0 0 0-.354.149c-.1.1-.149.217-.149.354v3.37H1.08a.483.483 0 0 0-.354.15c-.1.099-.149.217-.149.353v1.23c0 .136.05.254.149.353.1.1.217.149.354.149h3.333v3.39c0 .136.05.254.15.353.098.1.216.149.353.149H6.33Z" /></svg>
+                    <span class="font-bold text-moderate-blue text-15px"
+                      >${comment.score}</span
+                    >
+                    <svg width="11" class="cursor-pointer fill-light-grayish-blue hover:fill-moderate-blue" height="3" xmlns="http://www.w3.org/2000/svg"><path d="M9.256 2.66c.204 0 .38-.056.53-.167.148-.11.222-.243.222-.396V.722c0-.152-.074-.284-.223-.395a.859.859 0 0 0-.53-.167H.76a.859.859 0 0 0-.53.167C.083.437.009.57.009.722v1.375c0 .153.074.285.223.396a.859.859 0 0 0 .53.167h8.495Z" /></svg>
+                    </div>
+                    <button
+                      type="button"
+                      class="w-16 h-10 text-moderate-blue fill-moderate-blue hover:fill-light-grayish-blue hover:text-light-grayish-blue flex justify-around items-center align-middle desktop:hidden"
+                    >
+                    <svg width="14" height="13" xmlns="http://www.w3.org/2000/svg"><path d="M.227 4.316 5.04.16a.657.657 0 0 1 1.085.497v2.189c4.392.05 7.875.93 7.875 5.093 0 1.68-1.082 3.344-2.279 4.214-.373.272-.905-.07-.767-.51 1.24-3.964-.588-5.017-4.829-5.078v2.404c0 .566-.664.86-1.085.496L.227 5.31a.657.657 0 0 1 0-.993Z" /></svg>
+                      <span class="font-bold text-15px "
+                        >Reply</span
+                      >
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="post-reply flex flex-row desktop:w-desktop-card desktop:mx-auto"
+            >
+              <div
+                class="border border-light-gray mr-4 desktop:ml-8 desktop:mr-8"
+              ></div>
+              <div>
+                ${renderReply(comment.replies)}
+              </div>
+            </div>
+          </div>
+          `;
+          postContainer.innerHTML += commentELement;
+        });
+      };
+
+      main();
+    </script>
+  </body>
+</html>
